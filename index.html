@@ -21,7 +21,6 @@
     <meta name="apple-mobile-web-app-title" content="Sous Vide">
     
     <!-- === IKONA STARTOWA APLIKACJI === -->
-    <!-- Ikona widoczna na pulpicie telefonu i w zakładce przeglądarki -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3361/3361127.png">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3361/3361127.png">
     
@@ -76,7 +75,7 @@
         }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 24px; /* Nieco większy uchwyt dla wygody na telefonie */
+            height: 24px; 
             width: 24px;
             border-radius: 50%;
             background: var(--thumb-color);
@@ -107,7 +106,6 @@
         /* Inwersja ikony zegara w time pickerze */
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         
-        /* Blokada zaznaczania tekstu - feeling aplikacji natywnej */
         .no-select {
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -129,7 +127,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight text-white">Sous Vide</h1>
-                    <p class="text-[10px] text-slate-400 font-mono uppercase tracking-wider">Baldwin Model v2.4</p>
+                    <p class="text-[10px] text-slate-400 font-mono uppercase tracking-wider">Baldwin Model v2.5</p>
                 </div>
             </div>
             <div class="text-right hidden sm:block">
@@ -139,7 +137,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow p-4 sm:p-6">
+    <main class="flex-grow p-4 sm:p-6 pb-12">
         <div class="max-w-3xl mx-auto space-y-6">
             
             <!-- Left Column: Inputs -->
@@ -289,6 +287,29 @@
                         Wybierz produkt, aby zobaczyć notatkę eksperta.
                     </p>
                 </div>
+
+                <!-- === FOOTER: AUTOR & NAUKA === -->
+                <footer class="mt-8 pt-6 border-t border-slate-800/50 text-center space-y-4 opacity-60 hover:opacity-100 transition-opacity duration-500">
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest font-bold text-science-500">Fundament Naukowy</p>
+                        <p class="text-[9px] leading-relaxed text-slate-400 max-w-md mx-auto">
+                            Obliczenia termodynamiczne i pasteryzacyjne oparte na pracach matematycznych <strong>dr. Douglasa Baldwina</strong> oraz standardach bezpieczeństwa żywności <strong>FDA/USDA</strong>.
+                            <br>Parametry dla warzyw wg metodologii <strong>Modernist Cuisine</strong>.
+                        </p>
+                    </div>
+                    
+                    <div class="pt-2">
+                        <p class="text-[9px] text-slate-500 uppercase tracking-wider">
+                            Projekt i Implementacja
+                        </p>
+                        <p class="text-[11px] font-bold text-slate-300 tracking-wide mt-0.5">
+                            Tomasz Wawrzak
+                        </p>
+                        <p class="text-[9px] text-slate-600 mt-1">
+                            Version 2.5 • Precision Cooking Tool
+                        </p>
+                    </div>
+                </footer>
 
             </div>
         </div>
