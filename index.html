@@ -2,8 +2,29 @@
 <html lang="pl" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precision Sous Vide Calculator | Baldwin & Modernist Model</title>
+    <!-- Kluczowa linia blokująca skalowanie i poprawiająca wygląd na mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Precision Sous Vide Calculator</title>
+    
+    <!-- === KONFIGURACJA PWA (IKONY I PEŁNY EKRAN) === -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Kolor paska statusu (bateria/wifi) -->
+    <meta name="theme-color" content="#082f49">
+    
+    <!-- Ustawienia dla Androida -->
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Ustawienia dla iOS (iPhone) - to ukrywa pasek na Apple -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sous Vide">
+    
+    <!-- === IKONA STARTOWA APLIKACJI === -->
+    <!-- Ikona widoczna na pulpicie telefonu i w zakładce przeglądarki -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3361/3361127.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3361/3361127.png">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -15,20 +36,17 @@
                         science: {
                             50: '#f0f9ff',
                             100: '#e0f2fe',
-                            500: '#0ea5e9', // Sky blue for info
+                            500: '#0ea5e9', // Sky blue
                             700: '#0369a1',
-                            800: '#075985',
                             900: '#0c4a6e',
-                            950: '#082f49', // Deep Navy background
+                            950: '#082f49', // Deep Navy
                         },
                         alert: {
-                            DEFAULT: '#ef4444', // Red
-                            warn: '#f59e0b', // Amber
-                            safe: '#10b981', // Emerald
+                            DEFAULT: '#ef4444', 
+                            safe: '#10b981', 
                         },
                         veg: {
-                            DEFAULT: '#84cc16', // Lime green for veg mode
-                            dark: '#3f6212'
+                            DEFAULT: '#84cc16', 
                         }
                     },
                     fontFamily: {
@@ -40,24 +58,30 @@
         }
     </script>
     <style>
+        /* Bezpieczny obszar dla iPhone z notchem (wcięcia w ekranie) */
+        body {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
         :root {
-            --thumb-color: #0ea5e9; /* Default Science Blue */
+            --thumb-color: #0ea5e9; 
             --thumb-shadow: rgba(14, 165, 233, 0.5);
         }
 
-        /* Custom Range Slider Styling */
+        /* Styl suwaka */
         input[type=range] {
             -webkit-appearance: none;
             background: transparent;
         }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 20px;
-            width: 20px;
+            height: 24px; /* Nieco większy uchwyt dla wygody na telefonie */
+            width: 24px;
             border-radius: 50%;
             background: var(--thumb-color);
             cursor: pointer;
-            margin-top: -8px;
+            margin-top: -10px;
             box-shadow: 0 0 10px var(--thumb-shadow);
             transition: background-color 0.3s, box-shadow 0.3s;
         }
@@ -74,13 +98,21 @@
             border: 1px solid rgba(148, 163, 184, 0.1);
         }
         
+        /* Animacje detali */
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
         details[open] summary ~ * { animation: sweep .3s ease-in-out; }
         @keyframes sweep { 0% {opacity: 0; transform: translateY(-10px)} 100% {opacity: 1; transform: translateY(0)} }
+        
+        /* Inwersja ikony zegara w time pickerze */
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-        .fade-enter-active, .fade-leave-active { transition: opacity .5s; }
-        .fade-enter, .fade-leave-to { opacity: 0; }
+        
+        /* Blokada zaznaczania tekstu - feeling aplikacji natywnej */
+        .no-select {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
     </style>
 </head>
 <body class="bg-science-950 text-slate-200 font-sans min-h-screen flex flex-col antialiased selection:bg-science-500 selection:text-white">
@@ -89,33 +121,37 @@
     <header class="border-b border-slate-800 bg-science-900/50 sticky top-0 z-10 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-science-500 rounded flex items-center justify-center font-bold text-science-950">SV</div>
+                <!-- Ikona SVG w nagłówku -->
+                <div class="w-8 h-8 bg-science-500 rounded flex items-center justify-center text-science-950 shadow-lg shadow-science-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-white">Precision Sous Vide</h1>
-                    <p class="text-xs text-slate-400 font-mono">Baldwin & Modernist Model v2.3</p>
+                    <h1 class="text-xl font-bold tracking-tight text-white">Sous Vide</h1>
+                    <p class="text-[10px] text-slate-400 font-mono uppercase tracking-wider">Baldwin Model v2.4</p>
                 </div>
             </div>
             <div class="text-right hidden sm:block">
-                <div class="text-xs text-slate-500 uppercase tracking-wider">System Status</div>
-                <div class="text-xs text-science-500 font-mono">ONLINE • T_AMB 20°C</div>
+                <div class="text-xs text-science-500 font-mono">SYSTEM READY</div>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow p-4 sm:p-8">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <main class="flex-grow p-4 sm:p-6">
+        <div class="max-w-3xl mx-auto space-y-6">
             
             <!-- Left Column: Inputs -->
-            <div class="lg:col-span-5 space-y-6">
-                <div class="glass-panel rounded-xl p-6 shadow-2xl ring-1 ring-white/5">
-                    <h2 class="text-sm font-semibold text-science-500 uppercase tracking-widest mb-6 border-b border-slate-700 pb-2">Parametry Wsadowe</h2>
-                    <div class="space-y-5">
+            <div class="space-y-5">
+                <div class="glass-panel rounded-xl p-5 shadow-2xl ring-1 ring-white/5">
+                    <h2 class="text-xs font-bold text-science-500 uppercase tracking-widest mb-4 border-b border-slate-700/50 pb-2">Konfiguracja</h2>
+                    <div class="space-y-4">
                         <!-- Product Selection -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="col-span-2 sm:col-span-1">
-                                <label class="block text-xs text-slate-400 mb-1">Rodzaj Produktu</label>
-                                <select id="meatType" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:border-science-500 focus:ring-1 focus:ring-science-500 outline-none transition">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="col-span-2">
+                                <label class="block text-[10px] text-slate-400 uppercase mb-1 font-bold">Produkt</label>
+                                <select id="meatType" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-3 text-sm focus:border-science-500 focus:ring-1 focus:ring-science-500 outline-none transition text-white appearance-none">
                                     <option value="poultry_chicken">Drób - Kurczak</option>
                                     <option value="poultry_turkey">Drób - Indyk</option>
                                     <option value="pork">Wieprzowina</option>
@@ -125,206 +161,135 @@
                                     <option value="veg">Warzywa i Owoce</option>
                                 </select>
                             </div>
-                            <div class="col-span-2 sm:col-span-1">
-                                <label class="block text-xs text-slate-400 mb-1">Część / Typ</label>
-                                <select id="meatCut" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:border-science-500 focus:ring-1 focus:ring-science-500 outline-none transition">
+                            <div class="col-span-2">
+                                <label class="block text-[10px] text-slate-400 uppercase mb-1 font-bold">Element</label>
+                                <select id="meatCut" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-3 text-sm focus:border-science-500 focus:ring-1 focus:ring-science-500 outline-none transition text-white appearance-none">
                                     <!-- Populated via JS -->
                                 </select>
                             </div>
                         </div>
 
                         <!-- Texture Goal (Conditional) -->
-                        <div id="textureControlPanel" class="transition-opacity duration-300">
-                            <label class="block text-xs text-slate-400 mb-2">Cel Tekstury</label>
-                            <div class="grid grid-cols-2 gap-2 bg-slate-900 p-1 rounded-lg border border-slate-800">
-                                <button type="button" class="texture-btn active w-full py-2 text-xs font-medium rounded text-center transition-colors bg-science-700 text-white" data-value="dinner">
-                                    Obiad (Juicy)
+                        <div id="textureControlPanel" class="transition-opacity duration-300 pt-2">
+                            <label class="block text-[10px] text-slate-400 uppercase mb-2 font-bold">Preferowana Tekstura</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" class="texture-btn active py-3 text-xs font-medium rounded-lg text-center transition-all bg-science-600 text-white shadow-lg shadow-science-900/50 border border-transparent" data-value="dinner">
+                                    Obiad<br><span class="text-[9px] opacity-80 font-normal">Soczyste / Miękkie</span>
                                 </button>
-                                <button type="button" class="texture-btn w-full py-2 text-xs font-medium rounded text-center text-slate-400 hover:text-white transition-colors" data-value="sandwich">
-                                    Kanapka (Deli/Firm)
+                                <button type="button" class="texture-btn py-3 text-xs font-medium rounded-lg text-center text-slate-400 border border-slate-700 hover:bg-slate-800 transition-all" data-value="sandwich">
+                                    Kanapka<br><span class="text-[9px] opacity-60 font-normal">Zwarte / Krojenie</span>
                                 </button>
                             </div>
-                            <p id="textureDesc" class="text-[10px] text-slate-500 mt-2 px-1 italic">
-                                Optymalizacja pod kątem soczystości i serwowania na gorąco.
-                            </p>
                         </div>
 
                         <!-- Thickness -->
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <label class="text-xs text-slate-400">Grubość / Średnica</label>
-                                <span class="text-xl font-mono text-science-500"><span id="thicknessVal">25</span><span class="text-xs text-slate-500 ml-1">mm</span></span>
+                        <div class="pt-2">
+                            <div class="flex justify-between items-end mb-4">
+                                <label class="text-[10px] text-slate-400 uppercase font-bold">Grubość</label>
+                                <span class="text-2xl font-mono text-science-400 font-bold"><span id="thicknessVal">25</span><span class="text-sm text-slate-500 ml-1 font-normal">mm</span></span>
                             </div>
-                            <input type="range" id="thickness" min="5" max="100" value="25" step="1" class="w-full">
-                            <div class="flex justify-between text-[10px] text-slate-600 mt-1 font-mono">
-                                <span>5mm</span>
-                                <span>50mm</span>
-                                <span>100mm</span>
+                            <input type="range" id="thickness" min="5" max="100" value="25" step="1" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-[9px] text-slate-600 mt-2 font-mono uppercase">
+                                <span>Cienkie (5mm)</span>
+                                <span>Grube (100mm)</span>
                             </div>
                         </div>
 
-                        <!-- Shape & State -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs text-slate-400 mb-1">Kształt Geometryczny</label>
-                                <select id="shape" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:border-science-500 outline-none">
-                                    <option value="slab">Płyta / Stek (β=0)</option>
-                                    <option value="cylinder">Walec / Rolada (β=1)</option>
-                                    <option value="sphere">Kula (β=2)</option>
-                                </select>
+                        <!-- Advanced Options Collapsible -->
+                        <details class="group border-t border-slate-800 pt-3 mt-2">
+                            <summary class="flex cursor-pointer items-center justify-between text-[10px] font-bold text-slate-500 uppercase hover:text-science-400 transition list-none">
+                                <span>Zaawansowane (Kształt / Mrożone)</span>
+                                <span class="transition transform group-open:rotate-180 text-lg">▾</span>
+                            </summary>
+                            <div class="grid grid-cols-2 gap-4 pt-4 animate-fade-in">
+                                <div>
+                                    <label class="block text-[9px] text-slate-400 mb-1">Kształt</label>
+                                    <select id="shape" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-2 text-xs outline-none">
+                                        <option value="slab">Płyta / Stek</option>
+                                        <option value="cylinder">Walec / Rolada</option>
+                                        <option value="sphere">Kula</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] text-slate-400 mb-1">Stan</label>
+                                    <select id="state" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-2 text-xs outline-none">
+                                        <option value="fresh">Świeże (+5°C)</option>
+                                        <option value="frozen">Mrożone (-18°C)</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-xs text-slate-400 mb-1">Stan Termiczny</label>
-                                <select id="state" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:border-science-500 outline-none">
-                                    <option value="fresh">Świeże (+5°C)</option>
-                                    <option value="frozen">Mrożone (-18°C)</option>
-                                </select>
-                            </div>
-                        </div>
+                        </details>
                     </div>
                 </div>
 
-                <!-- Info Box -->
-                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-800 text-xs text-slate-400">
-                    <p><strong class="text-slate-300">Nota metodyczna:</strong> Obliczenia mięsne wg modelu dr. Baldwina (bezpieczeństwo). Warzywa wg standardów Modernist Cuisine (rozpad pektyny >83°C).</p>
-                </div>
-
-                <!-- Expert Panel -->
-                <div class="glass-panel rounded-xl p-4 border border-l-4 border-l-science-500 border-slate-800 bg-science-900/20" id="expertPanel">
-                    <h3 class="text-xs font-bold text-science-400 uppercase mb-1 flex items-center gap-2" id="expertTitle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                        Panel Ekspercki
-                    </h3>
-                    <p id="expertNote" class="text-xs text-slate-300 leading-relaxed">
-                        Wybierz rodzaj produktu, aby zobaczyć rekomendacje.
-                    </p>
-                </div>
-                
-                <!-- Credits -->
-                <div class="glass-panel rounded-xl p-4 border border-slate-800">
-                     <h3 class="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        O Projekcie / Źródła
-                     </h3>
-                     <div class="space-y-3 text-[11px] text-slate-400 leading-relaxed">
-                        <div>
-                            <strong class="text-science-500 block mb-1">Dr Douglas Baldwin (Mięso/Jajka)</strong>
-                            Matematyk stosowany (PhD). Jego tabele pasteryzacji to standard bezpieczeństwa (FDA/USDA compliant).
-                        </div>
-                        <div>
-                            <strong class="text-veg block mb-1">Modernist Cuisine / Kenji López-Alt (Warzywa)</strong>
-                            Dane dla roślin oparte na fizyce rozpadu pektyn i skrobi ("The Food Lab", "Modernist Cuisine").
-                        </div>
-                        <div class="border-t border-slate-800 pt-2">
-                             <strong class="text-slate-300 block mb-1">Tomasz Wawrzak (Autor Narzędzia)</strong>
-                             Implementacja algorytmiczna modeli naukowych do zastosowań domowych i gastronomicznych.
-                             <a href="#" class="block mt-1 text-science-500 hover:text-science-400 transition">Odwiedź stronę autora &rarr;</a>
-                        </div>
-                     </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Results -->
-            <div class="lg:col-span-7 space-y-6">
-                
                 <!-- Main Display -->
-                <div class="glass-panel rounded-xl p-1 shadow-2xl ring-1 ring-white/5 relative overflow-hidden">
-                    <div id="statusBar" class="absolute top-0 left-0 w-1 h-full bg-alert-safe transition-colors duration-500"></div>
-                    <div class="p-6 pl-8">
-                        <div class="flex justify-between items-start mb-8">
+                <div class="glass-panel rounded-xl p-1 shadow-2xl ring-1 ring-white/5 relative overflow-hidden mt-6">
+                    <div id="statusBar" class="absolute top-0 left-0 w-1.5 h-full bg-alert-safe transition-colors duration-500"></div>
+                    <div class="p-5 pl-7">
+                        <div class="flex justify-between items-start mb-6">
                             <div>
-                                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest">Parametry Procesu</h2>
-                                <div class="mt-1 text-2xl sm:text-4xl font-bold font-mono text-white tracking-tight flex items-baseline gap-2">
-                                    <span id="targetTemp">60.0</span><span class="text-lg text-slate-500">°C</span>
+                                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Temperatura Wody</h2>
+                                <div class="text-4xl font-bold font-mono text-white tracking-tighter flex items-baseline gap-1">
+                                    <span id="targetTemp">60.0</span><span class="text-xl text-science-500">°C</span>
                                 </div>
-                                <p class="text-xs text-science-500 mt-1 font-mono">Target Water Temp (Tw)</p>
                             </div>
                             <div class="text-right">
-                                <div id="safetyBadge" class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-alert-safe/20 text-alert-safe border border-alert-safe/30">
+                                <div id="safetyBadge" class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold bg-alert-safe/10 text-alert-safe border border-alert-safe/20 tracking-wide">
                                     PASTERYZACJA
                                 </div>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 border-t border-slate-700 pt-6">
+                        <div class="grid grid-cols-2 gap-6 border-t border-slate-700/50 pt-5">
                             <div>
-                                <p class="text-xs text-slate-400 mb-1 flex items-center gap-2" id="minTimeLabel">
-                                    MINIMALNY CZAS (Ogrzanie)
-                                </p>
-                                <div class="text-3xl font-mono text-white" id="minTime">00:00</div>
-                                <p class="text-[10px] text-slate-500 mt-1" id="minTimeSub">Safety / Core Temp</p>
+                                <p class="text-[10px] font-bold text-slate-500 uppercase mb-1" id="minTimeLabel">Minimum</p>
+                                <div class="text-2xl font-mono text-slate-200" id="minTime">00:00</div>
+                                <p class="text-[9px] text-slate-500 mt-0.5 leading-tight" id="minTimeSub">Bezpieczeństwo</p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-400 mb-1">OPTYMALNY CZAS</p>
-                                <div class="text-3xl font-mono text-science-500" id="optTime">00:00</div>
-                                <p class="text-[10px] text-slate-500 mt-1">Texture Breakdown</p>
+                                <p class="text-[10px] font-bold text-science-500 uppercase mb-1">Optimum</p>
+                                <div class="text-3xl font-mono text-science-400 font-bold" id="optTime">00:00</div>
+                                <p class="text-[9px] text-slate-500 mt-0.5 leading-tight">Idealna tekstura</p>
                             </div>
                         </div>
+                        
+                        <!-- Progress Bar Visual -->
+                        <div class="mt-5 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden flex">
+                             <div id="visHeat" class="bg-blue-500 h-full opacity-80"></div>
+                             <div id="visPast" class="bg-green-500 h-full opacity-80"></div>
+                             <div id="visTend" class="bg-amber-500 h-full opacity-80"></div>
+                        </div>
+                        <div class="flex justify-between text-[9px] text-slate-500 mt-1 font-mono uppercase">
+                            <span>Nagrzewanie</span>
+                            <span>Pasteryzacja</span>
+                            <span>Kruszenie</span>
+                        </div>
 
-                        <div id="warningContainer" class="hidden mt-6 p-3 bg-alert/10 border border-alert/30 rounded text-alert text-xs font-mono flex items-start gap-2">
-                            <span id="warningText">Warning message here.</span>
+                        <div id="warningContainer" class="hidden mt-4 p-3 bg-alert/10 border border-alert/30 rounded text-alert text-xs font-mono flex items-start gap-2">
+                            <span class="text-lg">⚠️</span> <span id="warningText">Warning message here.</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Meal Planner -->
-                <div class="glass-panel rounded-xl p-4 border border-slate-800 bg-science-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div class="flex-grow">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-science-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            Planer Posiłku
-                        </h3>
-                        <div class="flex items-center gap-3">
-                            <label class="text-[11px] text-slate-500 whitespace-nowrap">Chcę mieć gotowe na:</label>
-                            <input type="time" id="targetTime" class="bg-slate-800 border border-slate-700 text-white text-sm rounded px-2 py-1.5 focus:outline-none focus:border-science-500 transition w-32 shadow-sm">
-                        </div>
+                <div class="glass-panel rounded-xl p-4 border border-slate-800 bg-science-900/20 flex items-center justify-between gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Gotowe na godzinę:</label>
+                        <input type="time" id="targetTime" class="bg-slate-800 border border-slate-700 text-white text-lg rounded px-3 py-1 focus:outline-none focus:border-science-500 transition w-32 text-center font-bold font-mono">
                     </div>
-                    <div class="text-left sm:text-right bg-slate-900/50 p-3 rounded-lg border border-slate-800/50 min-w-[140px]">
-                        <p class="text-[10px] text-slate-500 mb-0.5 uppercase tracking-wide">Wstaw do wody o:</p>
-                        <div class="text-2xl font-mono font-bold text-alert-safe leading-none" id="startTime">--:--</div>
-                        <div class="text-[10px] text-slate-400 mt-1" id="startDateOffset">Wpisz godzinę podania</div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase mb-0.5">Wstaw o:</p>
+                        <div class="text-2xl font-mono font-bold text-alert-safe" id="startTime">--:--</div>
                     </div>
                 </div>
-
-                <!-- Data & Vis -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass-panel rounded-xl p-4 border border-slate-800 flex flex-col">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase mb-3">Dane Termodynamiczne</h3>
-                        <ul class="space-y-2 text-xs font-mono text-slate-300 mb-4">
-                            <li class="flex justify-between border-b border-slate-800 pb-1">
-                                <span>Dyfuzyjność ($\alpha$)</span><span class="text-science-500" id="alphaVal">-</span>
-                            </li>
-                            <li class="flex justify-between border-b border-slate-800 pb-1">
-                                <span>D-value ($T_{ref}$)</span><span class="text-science-500" id="dVal">-</span>
-                            </li>
-                            <li class="flex justify-between pt-1">
-                                <span>Czas do celu (Rdzeń)</span><span class="text-science-500" id="timeToCritical">-</span>
-                            </li>
-                        </ul>
-                         <details class="group mt-auto border-t border-slate-800 pt-2">
-                            <summary class="flex cursor-pointer items-center justify-between text-[10px] font-medium text-science-500 hover:text-science-400 transition">
-                                <span>Słownik Pojęć</span>
-                                <span class="transition group-open:rotate-180">▼</span>
-                            </summary>
-                            <div class="pt-2 text-[10px] text-slate-400 leading-relaxed space-y-2">
-                                <p><strong class="text-slate-300">Pektyna:</strong> "Klej" roślinny. Rozpada się dopiero >83°C. Poniżej tej temperatury warzywa nie zmiękną, bez względu na czas.</p>
-                                <p><strong class="text-slate-300">Log Reduction:</strong> Dla mięs: zabijanie bakterii. Dla warzyw: nie dotyczy (temp >83°C zabija wszystko natychmiast).</p>
-                            </div>
-                        </details>
-                    </div>
-
-                    <div class="glass-panel rounded-xl p-4 border border-slate-800 flex flex-col justify-center">
-                         <h3 class="text-xs font-bold text-slate-500 uppercase mb-3">Fazy Procesu</h3>
-                         <div class="relative w-full h-8 bg-slate-800 rounded-full overflow-hidden flex font-mono text-[9px] text-white/80 font-bold shadow-inner">
-                             <div id="visHeat" class="bg-blue-600 h-full flex items-center justify-center transition-all duration-500" style="width: 50%"></div>
-                             <div id="visPast" class="bg-green-600 h-full flex items-center justify-center transition-all duration-500" style="width: 20%"></div>
-                             <div id="visTend" class="bg-amber-600 h-full flex items-center justify-center transition-all duration-500" style="width: 30%"></div>
-                         </div>
-                         <div class="grid grid-cols-1 gap-2 mt-4" id="legendContainer">
-                             <!-- JS will populate -->
-                         </div>
-                    </div>
+                
+                <!-- Expert Note (Sticky Bottom Look) -->
+                <div class="border-l-2 border-science-500 pl-3 py-1">
+                     <p id="expertNote" class="text-xs text-slate-300 italic leading-relaxed">
+                        Wybierz produkt, aby zobaczyć notatkę eksperta.
+                    </p>
                 </div>
+
             </div>
         </div>
     </main>
@@ -333,15 +298,15 @@
         // --- CONSTANTS ---
         const ALPHA = {
             fish: 0.995e-7, poultry: 1.08e-7, meat: 1.11e-7, eggs: 1.08e-7,
-            veg: 1.4e-7 // Vegetables are mostly water (~1.4), slightly lower due to solids. High diffusivity compared to meat.
+            veg: 1.4e-7 
         };
 
         const PATHOGENS = {
-            poultry: { d60: 4.68, z: 6.45, targetLog: 7.0, name: "Salmonella" },
-            meat: { d60: 5.48, z: 6.00, targetLog: 6.5, name: "Listeria" },
-            fish: { d60: 10, z: 7, targetLog: 6.0, name: "Parasites" },
-            eggs: { d60: 4.68, z: 6.45, targetLog: 5.0, name: "Salmonella" },
-            veg: { d60: 0.1, z: 10, targetLog: 1.0, name: "None (Heat Only)" } // Dummy for veg
+            poultry: { d60: 4.68, z: 6.45, targetLog: 7.0 },
+            meat: { d60: 5.48, z: 6.00, targetLog: 6.5 },
+            fish: { d60: 10, z: 7, targetLog: 6.0 },
+            eggs: { d60: 4.68, z: 6.45, targetLog: 5.0 },
+            veg: { d60: 0.1, z: 10, targetLog: 1.0 } 
         };
 
         const CUTS = {
@@ -352,17 +317,17 @@
             fish: [{id:'fillet',name:'Filet'},{id:'steak',name:'Dzwonko'}],
             eggs: [{id:'soft',name:'Onsen (63°C)'},{id:'medium',name:'Idealne (65.5°C)'},{id:'hard',name:'Na twardo (74°C)'},{id:'raw_safe',name:'Pasteryzowane'}],
             veg: [
-                {id:'root', name:'Korzeniowe (Marchew, Ziemniak, Burak)'},
-                {id:'green', name:'Zielone (Szparagi, Brokuł, Fasolka)'},
-                {id:'fruit_hard', name:'Owoce Twarde (Gruszka, Jabłko)'},
-                {id:'fruit_soft', name:'Owoce Miękkie (Śliwka, Brzoskwinia)'}
+                {id:'root', name:'Korzeniowe (Marchew, Ziemniak)'},
+                {id:'green', name:'Zielone (Szparagi, Brokuł)'},
+                {id:'fruit_hard', name:'Owoce Twarde (Gruszka)'},
+                {id:'fruit_soft', name:'Owoce Miękkie (Śliwka)'}
             ]
         };
 
         const SHAPE_MODIFIERS = {
-            slab: { beta: 0, multiplier: 1.0 },
-            cylinder: { beta: 1, multiplier: 0.65 },
-            sphere: { beta: 2, multiplier: 0.45 }
+            slab: { multiplier: 1.0 },
+            cylinder: { multiplier: 0.65 },
+            sphere: { multiplier: 0.45 }
         };
 
         const state = { meatType: 'poultry_chicken', meatCut: 'breast', textureGoal: 'dinner', thicknessMm: 25, shape: 'slab', state: 'fresh' };
@@ -375,13 +340,10 @@
             targetTemp: document.getElementById('targetTemp'), minTime: document.getElementById('minTime'),
             optTime: document.getElementById('optTime'), safetyBadge: document.getElementById('safetyBadge'),
             warningContainer: document.getElementById('warningContainer'), warningText: document.getElementById('warningText'),
-            expertNote: document.getElementById('expertNote'), alphaVal: document.getElementById('alphaVal'),
-            dVal: document.getElementById('dVal'), timeToCritical: document.getElementById('timeToCritical'),
+            expertNote: document.getElementById('expertNote'), 
             visHeat: document.getElementById('visHeat'), visPast: document.getElementById('visPast'),
             visTend: document.getElementById('visTend'), targetTime: document.getElementById('targetTime'),
-            startTime: document.getElementById('startTime'), startDateOffset: document.getElementById('startDateOffset'),
-            expertPanel: document.getElementById('expertPanel'), expertTitle: document.getElementById('expertTitle'),
-            legendContainer: document.getElementById('legendContainer'), minTimeLabel: document.getElementById('minTimeLabel'),
+            startTime: document.getElementById('startTime'), minTimeLabel: document.getElementById('minTimeLabel'),
             minTimeSub: document.getElementById('minTimeSub')
         };
 
@@ -395,7 +357,6 @@
             els.meatType.addEventListener('change', (e) => {
                 state.meatType = e.target.value;
                 if(state.meatType === 'eggs') { state.shape = 'sphere'; els.shape.value = 'sphere'; state.thicknessMm = 50; els.thickness.value=50; els.thicknessVal.textContent=50; }
-                // Veg default shape
                 if(state.meatType === 'veg') { state.shape = 'cylinder'; els.shape.value = 'cylinder'; }
                 populateCuts(); calculate();
             });
@@ -406,8 +367,12 @@
             els.targetTime.addEventListener('input', () => calculate());
             els.textureBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    els.textureBtns.forEach(b => { b.classList.remove('bg-science-700', 'text-white', 'active'); b.classList.add('text-slate-400'); });
-                    btn.classList.add('bg-science-700', 'text-white', 'active'); btn.classList.remove('text-slate-400');
+                    els.textureBtns.forEach(b => { 
+                        b.classList.remove('bg-science-600', 'text-white', 'active', 'shadow-lg'); 
+                        b.classList.add('text-slate-400', 'border-slate-700');
+                    });
+                    btn.classList.add('bg-science-600', 'text-white', 'active', 'shadow-lg'); 
+                    btn.classList.remove('text-slate-400', 'border-slate-700');
                     state.textureGoal = btn.dataset.value; calculate();
                 });
             });
@@ -423,53 +388,40 @@
         }
 
         function updatePlanner(durationHours) {
-            if (!els.targetTime.value) { els.startTime.textContent = "--:--"; els.startDateOffset.textContent = "Wpisz godzinę podania"; return; }
+            if (!els.targetTime.value) { els.startTime.textContent = "--:--"; return; }
             const [tH, tM] = els.targetTime.value.split(':').map(Number);
             const target = new Date(); target.setHours(tH, tM, 0, 0);
             const start = new Date(target.getTime() - durationHours * 3600000);
             els.startTime.textContent = `${String(start.getHours()).padStart(2,'0')}:${String(start.getMinutes()).padStart(2,'0')}`;
-            const dayDiff = Math.round((start.setHours(0,0,0,0) - target.setHours(0,0,0,0)) / 86400000);
-            els.startDateOffset.textContent = dayDiff === 0 ? "Ten sam dzień" : (dayDiff === -1 ? "Dzień wcześniej (Wczoraj)" : `${Math.abs(dayDiff)} dni wcześniej`);
-            els.startDateOffset.className = dayDiff === 0 ? "text-[10px] text-slate-400 mt-1" : "text-[10px] text-amber-500 mt-1 font-bold";
         }
 
         function calculate() {
-            // UI Mode Logic
             const isVeg = state.meatType === 'veg';
             const isEgg = state.meatType === 'eggs';
             
-            // Toggle Texture Panel
             if (isEgg || isVeg) { els.textureControlPanel.style.opacity = '0'; els.textureControlPanel.style.pointerEvents = 'none'; }
             else { els.textureControlPanel.style.opacity = '1'; els.textureControlPanel.style.pointerEvents = 'auto'; }
 
-            // Styling for Veg Mode
             if(isVeg) {
-                els.expertPanel.classList.replace('border-l-science-500', 'border-l-veg');
-                els.expertTitle.classList.replace('text-science-400', 'text-veg');
                 document.documentElement.style.setProperty('--thumb-color', '#84cc16');
                 document.documentElement.style.setProperty('--thumb-shadow', 'rgba(132, 204, 22, 0.5)');
             } else {
-                els.expertPanel.classList.replace('border-l-veg', 'border-l-science-500');
-                els.expertTitle.classList.replace('text-veg', 'text-science-400');
                 document.documentElement.style.setProperty('--thumb-color', '#0ea5e9');
                 document.documentElement.style.setProperty('--thumb-shadow', 'rgba(14, 165, 233, 0.5)');
             }
 
-            // 1. Physics
+            // Calculation Logic
             let alpha = ALPHA[state.meatType.includes('poultry') ? 'poultry' : state.meatType] || ALPHA.meat;
             const shapeMod = SHAPE_MODIFIERS[state.shape];
-            
             const rec = getRecommendation(state.meatType, state.meatCut, state.textureGoal);
             const T_target = rec.temp;
             
-            // L in meters
             const L = state.thicknessMm / 1000;
             let heatTimeSec = (Math.pow(L, 2)) / (4 * alpha) * shapeMod.multiplier;
             if (state.state === 'frozen') heatTimeSec *= 1.5;
             
             let heatTimeHours = heatTimeSec / 3600;
 
-            // 2. Microbiology / Chemistry
             let pathogen = PATHOGENS[state.meatType.includes('poultry') ? 'poultry' : state.meatType] || PATHOGENS.meat;
             let pasteurTimeMin = 0;
             let isPasteurPossible = T_target >= 54.0;
@@ -479,94 +431,59 @@
                 const D_val = pathogen.d60 * Math.pow(10, exp);
                 pasteurTimeMin = pathogen.targetLog * D_val;
             }
-            // For Veg: Pasteurization is instant at >80C, so time is purely texture holding
-            
-            // 3. Totals
+
             let totalMinMinutes = (heatTimeSec / 60) + pasteurTimeMin;
             let totalMinHours = Math.ceil(totalMinMinutes) / 60;
 
-            // 4. Optimal Time
-            let finalOptHours = rec.time; // Base expert time
-            
-            // Logic: Optimal must be >= Physical Heat Up
+            let finalOptHours = rec.time;
             finalOptHours = Math.max(finalOptHours, heatTimeHours);
             
-            // Logic: Optimal must be >= Safety (except for raw eggs/steaks if user wants rare)
-            // For Veg: Safety is effectively heat-up time (instant kill at surface).
-            if (!isVeg && !isEgg && isPasteurPossible) {
-                finalOptHours = Math.max(finalOptHours, totalMinHours);
-            }
-            // For Veg: Add HeatUp time to the "Tenderizing time". 
-            // Since Rec.time for veg is usually "time AT temp", we must add heat up.
-            if (isVeg) {
-                finalOptHours = heatTimeHours + rec.time; 
-                totalMinHours = heatTimeHours; // Minimal time for veg is just getting it hot
-            }
-            // For Eggs: Trust expert time, but ensure heatup is met
-             if (isEgg) {
-                finalOptHours = Math.max(rec.time, heatTimeHours);
-                totalMinHours = heatTimeHours + (isPasteurPossible ? (pasteurTimeMin/60) : 0);
-             }
+            if (!isVeg && !isEgg && isPasteurPossible) finalOptHours = Math.max(finalOptHours, totalMinHours);
+            if (isVeg) { finalOptHours = heatTimeHours + rec.time; totalMinHours = heatTimeHours; }
+             if (isEgg) { finalOptHours = Math.max(rec.time, heatTimeHours); totalMinHours = heatTimeHours + (isPasteurPossible ? (pasteurTimeMin/60) : 0); }
 
-            // 5. Render UI
             els.targetTemp.textContent = T_target.toFixed(1);
             
-            // Labels update
             if (isVeg) {
-                els.minTimeLabel.textContent = "MINIMALNY CZAS (Ogrzanie)";
-                els.minTimeSub.textContent = "Heat Penetration Only";
+                els.minTimeLabel.textContent = "Ogrzanie";
+                els.minTimeSub.textContent = "Heat Pen.";
                 els.safetyBadge.textContent = "ROZPAD PEKTYNY";
-                els.safetyBadge.className = "inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-veg/20 text-veg border border-veg/30";
+                els.safetyBadge.className = "inline-flex items-center px-2 py-1 rounded text-[10px] font-bold bg-veg/20 text-veg border border-veg/30 tracking-wide";
             } else {
-                els.minTimeLabel.textContent = "MINIMALNY CZAS";
-                els.minTimeSub.textContent = "Safety Threshold";
-                els.safetyBadge.textContent = isPasteurPossible ? "PASTERYZACJA OK" : "HEAT & SERVE";
-                if(state.meatType==='eggs' && !isPasteurPossible) els.safetyBadge.textContent = "JADALNE (SUROWE)";
-                els.safetyBadge.className = "inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-alert-safe/20 text-alert-safe border border-alert-safe/30";
+                els.minTimeLabel.textContent = "Minimum";
+                els.minTimeSub.textContent = "Bezpieczeństwo";
+                els.safetyBadge.textContent = isPasteurPossible ? "PASTERYZACJA" : "HEAT ONLY";
+                if(state.meatType==='eggs' && !isPasteurPossible) els.safetyBadge.textContent = "SUROWE";
+                els.safetyBadge.className = "inline-flex items-center px-2 py-1 rounded text-[10px] font-bold bg-alert-safe/20 text-alert-safe border border-alert-safe/30 tracking-wide";
             }
 
-            // Time formatting
-            const formatH = (h) => `${Math.floor(h)}h ${Math.round((h % 1)*60)}m`;
+            const formatH = (h) => {
+                const hr = Math.floor(h);
+                const mn = Math.round((h % 1)*60);
+                return `${hr}h ${String(mn).padStart(2,'0')}m`;
+            };
             els.minTime.textContent = formatH(totalMinHours);
             els.optTime.textContent = formatH(finalOptHours);
 
-            // Expert Note
             let note = rec.note;
-            if (state.state === 'frozen') note += " (Doliczono czas na rozmrażanie).";
+            if (state.state === 'frozen') note += " (Czas rozmrażania wliczony).";
             els.expertNote.textContent = note;
 
-            // Data
-            els.alphaVal.textContent = alpha.toExponential(2);
-            els.dVal.textContent = isVeg ? "Nie dotyczy" : (isPasteurPossible ? pathogen.d60 + " min" : "N/A");
-            els.timeToCritical.textContent = heatTimeHours.toFixed(2) + " h";
-
-            // Visuals & Legend
             updateVisuals(isVeg, isEgg, heatTimeHours, totalMinHours, finalOptHours);
-            
-            // Planner
             updatePlanner(finalOptHours);
         }
 
         function updateVisuals(isVeg, isEgg, heatH, safeH, optH) {
             let totalS = optH * 3600 || 1;
             let heatPct = (heatH * 3600 / totalS) * 100;
-            let midPct = 0;
             
             if(isVeg) {
-                // Veg: Heat -> Pectin Breakdown (Amber)
-                midPct = 0; // No pasteurization phase distinct from texture
                 let tendPct = 100 - heatPct;
                 els.visHeat.style.width = `${heatPct}%`;
                 els.visPast.style.width = `0%`;
                 els.visTend.style.width = `${tendPct}%`;
-                els.visTend.className = "bg-veg h-full flex items-center justify-center transition-all duration-500";
-                
-                els.legendContainer.innerHTML = `
-                    <div class="flex items-center gap-2 text-[10px] text-slate-400"><div class="w-2 h-2 rounded-full bg-blue-600"></div><span><strong>Ogrzewanie:</strong> Fizyczne wnikanie ciepła.</span></div>
-                    <div class="flex items-center gap-2 text-[10px] text-slate-400"><div class="w-2 h-2 rounded-full bg-veg"></div><span><strong>Pektyna:</strong> Czas w >83°C niezbędny do zmiękczenia.</span></div>
-                `;
+                els.visTend.className = "bg-veg h-full opacity-80";
             } else {
-                // Meat/Eggs
                 let safeS = safeH * 3600;
                 let pastS = safeS - (heatH * 3600);
                 if(pastS < 0) pastS = 0;
@@ -576,65 +493,46 @@
                 els.visHeat.style.width = `${heatPct}%`;
                 els.visPast.style.width = `${pastPct}%`;
                 els.visTend.style.width = `${tendPct}%`;
-                els.visTend.className = "bg-amber-600 h-full flex items-center justify-center transition-all duration-500";
-
-                els.legendContainer.innerHTML = `
-                    <div class="flex items-center gap-2 text-[10px] text-slate-400"><div class="w-2 h-2 rounded-full bg-blue-600"></div><span><strong>Ogrzewanie</strong></span></div>
-                    <div class="flex items-center gap-2 text-[10px] text-slate-400"><div class="w-2 h-2 rounded-full bg-green-600"></div><span><strong>Pasteryzacja</strong></span></div>
-                    <div class="flex items-center gap-2 text-[10px] text-slate-400"><div class="w-2 h-2 rounded-full bg-amber-600"></div><span><strong>Tekstura</strong></span></div>
-                `;
+                els.visTend.className = "bg-amber-500 h-full opacity-80";
             }
         }
 
         function getRecommendation(type, cut, goal) {
             let temp=60, time=2, note="";
-            // VEG
             if (type === 'veg') {
-                if (cut === 'root') {
-                    temp = 85.0; time = 1.0; // + heat up
-                    note = "Korzeniowe wymagają 85°C do rozpadu pektyny. Poniżej tej temperatury pozostaną twarde. Czas liczony od osiągnięcia temp. w rdzeniu.";
-                } else if (cut === 'green') {
-                    temp = 84.0; time = 0.25; // 15 min + heat up
-                    note = "Zielone warzywa krótko, aby zachować kolor (chlorofil). 84°C wystarczy do zmiękczenia bez rozgotowania.";
-                } else if (cut === 'fruit_hard') {
-                    temp = 84.0; time = 0.5; 
-                    note = "Gruszki/Jabłka. 84°C zmiękcza, ale nie robi dżemu. Idealne do deserów.";
-                } else if (cut === 'fruit_soft') {
-                    temp = 80.0; time = 0.25; // Lower temp for soft fruits
-                    note = "Miękkie owoce wymagają niższej temperatury, by nie zamienić się w 'papkę'.";
-                }
+                if (cut === 'root') { temp = 85.0; time = 1.0; note = "Korzeniowe: 85°C min. do miękkości."; } 
+                else if (cut === 'green') { temp = 84.0; time = 0.25; note = "Zielone: Krótko, aby zachować kolor."; } 
+                else if (cut === 'fruit_hard') { temp = 84.0; time = 0.5; note = "Twarde owoce: Zmiękną, ale zachowają kształt."; } 
+                else if (cut === 'fruit_soft') { temp = 80.0; time = 0.25; note = "Miękkie owoce: Niższa temp. zapobiega papce."; }
                 return {temp, time, note};
             }
-            // EGGS
             if (type === 'eggs') {
-                if (cut === 'soft') { temp = 63.0; time = 0.75; note = "Onsen Tamago. Kremowe żółtko, luźne białko."; }
-                else if (cut === 'medium') { temp = 65.5; time = 1.0; note = "Idealne (Custard). Żółtko jak krówka."; }
-                else if (cut === 'hard') { temp = 74.0; time = 1.0; note = "Twarde, ale wilgotne żółtko."; }
-                else if (cut === 'raw_safe') { temp = 57.0; time = 2.0; note = "Pasteryzowane na surowo."; }
+                if (cut === 'soft') { temp = 63.0; time = 0.75; note = "Onsen: Płynne białko, kremowe żółtko."; }
+                else if (cut === 'medium') { temp = 65.5; time = 1.0; note = "Custard: Idealna, plastyczna konsystencja."; }
+                else if (cut === 'hard') { temp = 74.0; time = 1.0; note = "Na twardo: Ścięte, ale wilgotne."; }
+                else if (cut === 'raw_safe') { temp = 57.0; time = 2.0; note = "Bezpieczne surowe (do majonezu/kogla-mogla)."; }
                 return {temp, time, note};
             }
-            // MEATS (Standard Baldwin)
             if (type === 'poultry_chicken') {
-                if (cut === 'breast') { return goal==='dinner' ? {temp:60.5, time:2, note:"Soczysta pierś."} : {temp:63.5, time:3.5, note:"Do kanapek (zwarte)."}; }
-                if (cut === 'thigh') return {temp:65.0, time:3, note:"Ciemne mięso drobiowe."};
+                if (cut === 'breast') { return goal==='dinner' ? {temp:60.5, time:1.5, note:"Super soczysta pierś."} : {temp:63.5, time:2.5, note:"Pierś tradycyjna/zwarta."}; }
+                if (cut === 'thigh') return {temp:65.0, time:3, note:"Ciemne mięso wymaga wyższej temperatury."};
             }
             if (type === 'poultry_turkey') {
-                if (cut === 'breast') { return goal==='dinner' ? {temp:62.0, time:2.5, note:"Indyk (grubsze włókna)."} : {temp:65.0, time:4, note:"Szynka z indyka."}; }
-                if (cut === 'thigh') return {temp:65.0, time:4, note:"Udko indyka."};
+                if (cut === 'breast') { return goal==='dinner' ? {temp:62.0, time:2.5, note:"Pierś indyka."} : {temp:65.0, time:4, note:"Szynka z piersi indyka."}; }
+                if (cut === 'thigh') return {temp:65.0, time:4, note:"Udko indyka: Dużo kolagenu."};
             }
             if (type === 'pork') {
-                if (['loin','tenderloin','ham'].includes(cut)) return goal==='dinner' ? {temp:58.0, time:2.5, note:"Schab różowy."} : {temp:61.0, time:4, note:"Wędlina wieprzowa."};
-                if (['shoulder','neck'].includes(cut)) return goal==='dinner' ? {temp:57.0, time:24, note:"Karkówka 'stekowa' (24h)."} : {temp:74.0, time:18, note:"Pulled Pork."};
-                if (cut === 'belly') return {temp:80.0, time:8, note:"Boczek miękki (Braising style)."};
+                if (['loin','tenderloin','ham'].includes(cut)) return goal==='dinner' ? {temp:58.0, time:2.5, note:"Schab: Różowy i soczysty."} : {temp:61.0, time:4, note:"Schab: Biały, tradycyjny."};
+                if (['shoulder','neck'].includes(cut)) return goal==='dinner' ? {temp:57.0, time:24, note:"Karkówka 'stekowa' (24h)."} : {temp:74.0, time:18, note:"Pulled Pork (rozpadająca się)."};
+                if (cut === 'belly') return {temp:80.0, time:8, note:"Boczek: Miękki i rozpływający się."};
             }
             if (type === 'beef') {
-                if (cut === 'steak') return goal==='dinner' ? {temp:54.0, time:1.5, note:"Stek Medium-Rare."} : {temp:56.0, time:2, note:"Stek Pasteryzowany."};
-                if (['chuck','round'].includes(cut)) return goal==='dinner' ? {temp:56.0, time:36, note:"Krucha pieczeń (36h)."} : {temp:55.0, time:26, note:"Deli Roast Beef (24h+)."};
-                if (cut === 'brisket') return {temp:63.0, time:48, note:"Mostek (48h)."};
+                if (cut === 'steak') return goal==='dinner' ? {temp:54.0, time:1.5, note:"Stek Medium-Rare (Krwisty)."} : {temp:56.0, time:2, note:"Stek Medium (Średni)."};
+                if (['chuck','round'].includes(cut)) return goal==='dinner' ? {temp:56.0, time:24, note:"Pieczeń 24h (zmięknie jak polędwica)."} : {temp:55.0, time:36, note:"Deli Roast Beef."};
+                if (cut === 'brisket') return {temp:63.0, time:48, note:"Mostek 48h: Klasyka BBQ (bez dymu)."};
             }
-            if (type === 'fish') {
-                 return {temp:50.0, time:0.75, note:"Ryba delikatna (Sashimi quality)."};
-            }
+            if (type === 'fish') return {temp:50.0, time:0.5, note:"Ryba: Delikatna, 'szklista' struktura."};
+            
             return {temp:60, time:2, note:""};
         }
 
